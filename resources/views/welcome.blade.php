@@ -33,7 +33,7 @@
 </head>
 
 <body class="font-sans antialiased">
-    <nav x-data="{ open: false }" class="bg-orange border-b-2 border-shadow border-green">
+    <nav class="bg-orange border-b-2 border-shadow border-green">
         <!-- Primary Navigation Menu -->
         <div class="container max-w-9xl mx-auto bg-orange px-4 sm:px-6 lg:px-8">
             <div class="flex h-16">
@@ -48,47 +48,48 @@
                             <span class="lg:hidden flex w-48 pl-12 mr-6 text-xl sm:w-full md:text-3xl ">TELMA</span>
                         </span>
                         <a href="">
-                            <x-byu-logo/>
+                            <x-byu-logo />
                         </a>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
+    <!-- Page Content -->
     @include('layouts.hero')
-    <div class="relative w-full mt-6 md:h-[50vh] sm:h-lvw overflow-hidden" x-data="{ banner: false, search: false }">
+    <div class="relative w-full mt-6 md:h-[50vh] sm:h-lvw overflow-hidden">
         <span
             class="inline-block w-full mt-[1.55rem] text-2xl text-center sm:text-4xl font-batik font-bold selection:bg-white selection:text-premier text-orange">
             DAFTAR SEKARANG
         </span>
-        <div class="relative w-full bg-[url('/images/wave4.svg')] bg-no-repeat bg-cover md:h-[50vh] sm:h-lvw overflow-hidden"
-            x-data="{ banner: false, search: false }">
+        <div
+            class="relative w-full bg-[url('/images/wave4.svg')] bg-no-repeat bg-cover md:h-[50vh] sm:h-lvw overflow-hidden">
             <form class="mx-auto w-fit flex flex-col gap-6 mt-12 ">
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
-                        <input type="text"
+                        <input type="text" id="kampus_id"
                             class="form-input w-[280px] gap-2 rounded border-2 border-orange text-sm py-2.5"
-                            name="npsm" placeholder="Masukkan NPSM Sekolah">
+                            name="kampus_id" placeholder="Masukkan NPSM Sekolah">
                         <div>
-                            <button type="" class="mt-1 ml-1 text-sm underline text-orange showModal">
+                            <button class="mt-1 ml-1 text-sm underline text-orange show-modal">
                                 Cari Kampus
                             </button>
-                            {{-- modal --}}
-                            <div
-                                class="modal relative flex justify-center items-center w-full h-screen fixed bg-transparent hidden">
-                                <button class="absolute top-3 right-3">
+                            <div id="myModal"
+                                class="modal h-screen w-full fixed left-0 top-0 flex justify-center items-center bg-orange bg-opacity-50 hidden">
+                                <button class="absolute top-3 right-3 close-modal">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 stroke-blue">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                                     </svg>
                                 </button>
-                                <div class="bg-white w-3/5 h-96 border rounded my-16 ">
+                                <div class="bg-white rounded shadow-lg w-3/4 h-4/5">
                                     <div
-                                        class="flex bg-blue justify-center items-center h-14 font-batik text-white text-lg">
-                                        <span>Cari Kampus</span>
+                                        class="px-4 py-2 flex bg-blue justify-center items-center h-14 font-batik text-white text-lg rounded">
+                                        <h3>Cari Kampus</h3>
                                     </div>
-                                    <div class="flex justify-center pt-2 px-3">
-                                        <input type="text" class="form-input w-full h-10 rounded border text-sm"
+                                    <div class="flex justify-center py-2 px-3">
+                                        <input id="searchInput" type="text"
+                                            class="form-input w-full h-10 rounded border text-sm"
                                             placeholder="Ketik Nama Kampus">
                                         <button
                                             class="rounded w-10 h-10 bg-white ml-3 flex justify-center items-center border">
@@ -99,15 +100,22 @@
                                             </svg>
                                         </button>
                                     </div>
-                                    <div class="h-64 m-3">
-                                        <div value="#" npsm="" class="border h-10 p-2 rounded">
-                                            <span>Nama sekolah</span>
-                                            <span>NPSM</span>
-                                        </div>
+                                    <div class="m-3 text-truncate" id="kampusList">
+                                        @foreach ($kampusList as $index => $kampus)
+                                            <div class="h-10 p-3 rounded flex flex-col @if ($index >= 10) hidden @endif"
+                                                >
+                                                {{-- <p class="text-lg border-b">
+                                                    Nama sekolah: {{ $kampus->nama_sekolah }}
+                                                </p> --}}
+                                                <p class="text-sm">
+                                                    NPSN: {{ $kampus->npsn }}
+                                                </p>
+
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
-                            {{-- end Modal --}}
                         </div>
                     </div>
                     <div>
@@ -153,19 +161,47 @@
             </form>
         </div>
     </div>
-
-    <div class="flex justify-center justify-between h-auto bg-green font-bold text-white items-center w-full">
-        <img src="https://tyes.live/telma/images/byu-white.svg" alt="Telkomsel" class="w-6 h-6 ml-4">
-        <span class="text-sm m-auto">Telma 2023</span>
-        <img src="https://tyes.live/telma/images/telkomsel-white.png" alt="Telkomsel" class="w-16 h-3 mr-4">
-    </div>
+    @include('layouts.footer')
     <script>
-        const modal = document.querySelector('.modal');
-        const showModal = document.querySelector('.showModal');
-        showModa.addEventListener('click', function() {
-            modal.classList.remove('hidden')
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.querySelector('.modal'); // Menggunakan querySelector untuk mengambil modal
+            const showModal = document.querySelector('.show-modal');
+            const closeModal = document.querySelector('.close-modal');
+
+            showModal.addEventListener('click', function(event) {
+                event.preventDefault();
+                modal.classList.remove('hidden');
+            });
+
+            closeModal.addEventListener('click', function(event) {
+                event.preventDefault();
+                modal.classList.add('hidden');
+            });
+
+            function selectKampus(npsn) {
+                document.getElementById("kampus_id").value = npsn;
+                modal.classList.add('hidden');
+            }
+
+            document.getElementById("searchInput").addEventListener("input", function() {
+                var input, filter, kampusList, divs, i, txtValue;
+                input = document.getElementById('searchInput');
+                filter = input.value.toUpperCase();
+                kampusList = document.getElementById('kampusList');
+                divs = kampusList.getElementsByTagName('div');
+
+                for (i = 0; i < divs.length; i++) {
+                    txtValue = divs[i].textContent || divs[i].innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        divs[i].style.display = "";
+                    } else {
+                        divs[i].style.display = "none";
+                    }
+                }
+            });
         });
     </script>
+
 </body>
 
 </html>
