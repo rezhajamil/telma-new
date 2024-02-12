@@ -734,14 +734,6 @@ select {
   margin-top: 4rem;
   margin-bottom: 4rem;
 }
-.mx-3 {
-  margin-left: 0.75rem;
-  margin-right: 0.75rem;
-}
-.my-3 {
-  margin-top: 0.75rem;
-  margin-bottom: 0.75rem;
-}
 .-ml-px {
   margin-left: -1px;
 }
@@ -750,6 +742,9 @@ select {
 }
 .-mt-px {
   margin-top: -1px;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
 }
 .mb-4 {
   margin-bottom: 1rem;
@@ -847,11 +842,11 @@ select {
 .h-3 {
   height: 0.75rem;
 }
-.h-3\/4 {
-  height: 75%;
-}
 .h-4 {
   height: 1rem;
+}
+.h-4\/5 {
+  height: 80%;
 }
 .h-5 {
   height: 1.25rem;
@@ -874,11 +869,8 @@ select {
 .h-screen {
   height: 100vh;
 }
-.h-1\/2 {
-  height: 50%;
-}
-.h-4\/5 {
-  height: 80%;
+.max-h-96 {
+  max-height: 24rem;
 }
 .min-h-screen {
   min-height: 100vh;
@@ -1017,6 +1009,9 @@ select {
 }
 .overflow-hidden {
   overflow: hidden;
+}
+.overflow-y-auto {
+  overflow-y: auto;
 }
 .break-all {
   word-break: break-all;
@@ -1456,6 +1451,11 @@ select {
     font-size: 2.25rem;
     line-height: 2.5rem;
   }
+
+  .sm\:text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
 }
 @media (min-width: 768px) {
 
@@ -1470,6 +1470,11 @@ select {
   .md\:text-3xl {
     font-size: 1.875rem;
     line-height: 2.25rem;
+  }
+
+  .md\:text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 }
 @media (min-width: 1024px) {

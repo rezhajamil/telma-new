@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Daftar extends Model
+class daftar extends Model
 {
     use HasFactory;
     protected $table = 'daftars';
@@ -21,7 +21,7 @@ class Daftar extends Model
 
     public function kampus()
     {
-        return $this->belongsTo(kampus::class, 'kampus_id', 'npsn');
+        return $this->belongsTo(daftarsekolah::class, 'kampus_id', 'NPSN');
     }
 
 }

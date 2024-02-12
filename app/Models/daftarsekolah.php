@@ -10,12 +10,12 @@ class daftarsekolah extends Model
     use HasFactory;
     protected $table = 'data_sekolah_sumatera';
 
-    protected $primaryKey = 'npsn';
+    protected $primaryKey = 'NPSN';
     public $incrementing = false;
 
     protected $fillable = [
-        'npsn',
-        'nama_sekolah',
+        'NPSN',
+        'NAMA_SEKOLAH',
         'provinsi',
         'kab_kota',
         'kecamatan',

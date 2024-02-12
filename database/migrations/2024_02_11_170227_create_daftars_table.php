@@ -16,14 +16,13 @@ class CreateDaftarsTable extends Migration
         Schema::create('daftars', function (Blueprint $table) {
             $table->id();
             $table->string('kampus_id');
-            $table->foreign('kampus_id')->references('npsn')->on('kampus');
+            $table->foreign('kampus_id')->references('NPSN')->on('data_sekolah_sumatera');
             $table->tinyInteger('semester')->unsigned();
             $table->string('nama_lengkap');
             $table->string('email')->unique();
             $table->string('nomor_hp');
             $table->string('nomor_wa');
-            $table->enum('hobi', ['musik', 'games', 'video', 'bisnis']);
-            $table->string('tempat_nongkrong_favorit');
+            $table->enum('hobi', ['olahraga', 'musik', 'menulis']);
             $table->timestamps();
         });
     }

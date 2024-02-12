@@ -64,19 +64,21 @@
         </span>
         <div
             class="relative w-full bg-[url('/images/wave4.svg')] bg-no-repeat bg-cover md:h-[50vh] sm:h-lvw overflow-hidden">
-            <form class="mx-auto w-fit flex flex-col gap-6 mt-12 ">
+            <form method="POST" action="{{ route('daftar.store') }}" 
+            class="mx-auto w-fit flex flex-col gap-6 mt-12 ">
+            @csrf
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                         <input type="text" id="kampus_id"
                             class="form-input w-[280px] gap-2 rounded border-2 border-orange text-sm py-2.5"
                             name="kampus_id" placeholder="Masukkan NPSM Sekolah">
                         <div>
-                            <button class="mt-1 ml-1 text-sm underline text-orange show-modal">
+                            <button class="mt-1 ml-1 text-sm underline text-orange" onclick="openModal(event)">
                                 Cari Kampus
                             </button>
                             <div id="myModal"
                                 class="modal h-screen w-full fixed left-0 top-0 flex justify-center items-center bg-orange bg-opacity-50 hidden">
-                                <button class="absolute top-3 right-3 close-modal">
+                                <button onclick="closeModal(event)" class="absolute top-3 right-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 stroke-blue">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -91,26 +93,20 @@
                                         <input id="searchInput" type="text"
                                             class="form-input w-full h-10 rounded border text-sm"
                                             placeholder="Ketik Nama Kampus">
-                                        <button
-                                            class="rounded w-10 h-10 bg-white ml-3 flex justify-center items-center border">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 stroke-blue">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <div class="m-3 text-truncate" id="kampusList">
-                                        @foreach ($kampusList as $index => $kampus)
-                                            <div class="h-10 p-3 rounded flex flex-col @if ($index >= 10) hidden @endif"
-                                                >
-                                                {{-- <p class="text-lg border-b">
-                                                    Nama sekolah: {{ $kampus->nama_sekolah }}
-                                                </p> --}}
-                                                <p class="text-sm">
-                                                    NPSN: {{ $kampus->npsn }}
-                                                </p>
 
+                                    </div>
+                                    <div class="m-3 overflow-y-auto max-h-96" id="kampusList">
+                                        @foreach ($kampusList as $index => $kampus)
+                                            <div
+                                                class="h-10 px-2 py-1 mb-2 border rounded flex flex-col hidden">
+                                                <p class="text-xs border-b"
+                                                    onclick="selectKampus('{{ $kampus->NPSN }}')">
+                                                    {{ $kampus->NAMA_SEKOLAH }}
+                                                </p>
+                                                <p class="text-xs" 
+                                                    onclick="selectKampus('{{ $kampus->NPSN }}')">
+                                                    NPSN: {{ $kampus->NPSN }}
+                                                </p>
                                             </div>
                                         @endforeach
                                     </div>
@@ -119,17 +115,15 @@
                         </div>
                     </div>
                     <div>
-                        <select class="form-multiselect w-[280px] gap-2 rounded border-2 border-orange text-sm py-2">
-                            <option value="" selected>Pilih Semester</option>
-                            <option value="">1</option>
-                            <option value="">2</option>
-                            <option value="">3</option>
-                            <option value="">4</option>
+                        <select name="semester" class="form-multiselect w-[280px] gap-2 rounded border-2 border-orange text-sm py-2">
+                            @for ($i = 1; $i <= 14; $i++)
+                                <option value="{{ $i }}">{{ $i }}</option>
+                            @endfor
                         </select>
                     </div>
                     <div>
                         <input type="text" class="w-[280px] gap-2 rounded border-2 border-orange text-sm py-2.5"
-                            name="nama" placeholder="Nama Lengkap">
+                            name="nama_lengkap" placeholder="Nama Lengkap">
                     </div>
                     <div>
                         <input type="email" class="w-[280px] gap-2 rounded border-2 border-orange text-sm py-2.5"
@@ -137,23 +131,23 @@
                     </div>
                     <div>
                         <input type="text" class="w-[280px] gap-2 rounded border-2 border-orange text-sm py-2.5"
-                            name="nomorhp" placeholder="Nomor telepon">
+                            name="nomor_hp" placeholder="Nomor telepon">
                     </div>
                     <div>
                         <input type="text" class="w-[280px] gap-2 rounded border-2 border-orange text-sm py-2.5"
-                            name="nomorwa" placeholder="Nomor WhatsApp">
+                            name="nomor_wa" placeholder="Nomor WhatsApp">
                     </div>
                     <div>
-                        <select class="form-multiselect w-[280px] gap-2 rounded border-2 border-orange text-sm py-2">
+                        <select name="hobi" class="form-multiselect w-[280px] gap-2 rounded border-2 border-orange text-sm py-2">
                             <option value="" selected>Hobi</option>
-                            <option value="">2</option>
-                            <option value="">3</option>
-                            <option value="">4</option>
+                            <option value="olahraga">Olahraga</option>
+                            <option value="musik">Musik</option>
+                            <option value="menulis">Menulis</option>
                         </select>
                     </div>
                 </div>
                 <div class="w-full mb-5">
-                    <button type=""
+                    <button type="submit"
                         class="w-full bg-orange p-2.5 rounded uppercase font-bold text-white hover:bg-white hover:text-orange hover:border-2 hover:border-orange transition-all">
                         Daftar
                     </button>
@@ -163,42 +157,36 @@
     </div>
     @include('layouts.footer')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.querySelector('.modal'); // Menggunakan querySelector untuk mengambil modal
-            const showModal = document.querySelector('.show-modal');
-            const closeModal = document.querySelector('.close-modal');
+        function openModal(event) {
+            document.getElementById("myModal").classList.remove('hidden');
+            event.preventDefault();
+        }
 
-            showModal.addEventListener('click', function(event) {
-                event.preventDefault();
-                modal.classList.remove('hidden');
-            });
+        function closeModal(event) {
+            document.getElementById("myModal").classList.add('hidden');
+            event.preventDefault();
+        }
 
-            closeModal.addEventListener('click', function(event) {
-                event.preventDefault();
-                modal.classList.add('hidden');
-            });
+        function selectKampus(NPSN) {
+            document.getElementById('kampus_id').value = NPSN;
+            closeModal();
+        }
 
-            function selectKampus(npsn) {
-                document.getElementById("kampus_id").value = npsn;
-                modal.classList.add('hidden');
-            }
+        document.getElementById("searchInput").addEventListener("input", function() {
+            var input, filter, kampusList, divs, i, txtValue;
+            input = document.getElementById('searchInput');
+            filter = input.value.toUpperCase();
+            kampusList = document.getElementById('kampusList');
+            divs = kampusList.getElementsByTagName('div');
 
-            document.getElementById("searchInput").addEventListener("input", function() {
-                var input, filter, kampusList, divs, i, txtValue;
-                input = document.getElementById('searchInput');
-                filter = input.value.toUpperCase();
-                kampusList = document.getElementById('kampusList');
-                divs = kampusList.getElementsByTagName('div');
-
-                for (i = 0; i < divs.length; i++) {
-                    txtValue = divs[i].textContent || divs[i].innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        divs[i].style.display = "";
-                    } else {
-                        divs[i].style.display = "none";
-                    }
+            for (i = 0; i < divs.length; i++) {
+                txtValue = divs[i].textContent || divs[i].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    divs[i].classList.remove('hidden');
+                } else {
+                    divs[i].classList.add('hidden');
                 }
-            });
+            }
         });
     </script>
 
