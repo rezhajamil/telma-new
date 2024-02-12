@@ -15,13 +15,18 @@ class DaftarController extends Controller
         return view('welcome', ['daftarList' => $daftarList]); // Menampilkan data ke view
     }
 
-    public function create()
-    {
-        // Mengambil daftar kampus dari model Kampus
-        $kampusList = daftarsekolah::all();
 
-        // Meneruskan daftar kampus ke tampilan create.blade.php
-        return view('welcome', ['kampusList' => $kampusList]);
+    public function getKampusByKeyword(Request $request)
+    {
+        $keyword = $request->input('keyword');
+        $limit = 10; // Tetapkan batas data yang diambil
+
+        $kampusList = DaftarSekolah::where('NAMA_SEKOLAH', 'LIKE', "%$keyword%")
+            ->orWhere('NPSN', 'LIKE', "%$keyword%")
+            ->take($limit) // Tetapkan batas data yang diambil
+            ->get();
+
+        return response()->json(['kampusList' => $kampusList]);
     }
 
     public function store(Request $request)
@@ -55,6 +60,4 @@ class DaftarController extends Controller
 
         return redirect('/')->with('success', 'Data berhasil disimpan.');
     }
-
 }
-

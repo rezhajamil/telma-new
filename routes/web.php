@@ -18,7 +18,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/', [DaftarController::class, 'create'])->name('daftar.create');
 Route::post('/', [DaftarController::class, 'store'])->name('daftar.store');
+
+Route::get('/get-kampus-by-keyword', [DaftarController::class, 'getKampusByKeyword'])->name('get-kampus-by-keyword');
+
 
 require __DIR__.'/auth.php';

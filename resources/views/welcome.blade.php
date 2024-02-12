@@ -18,6 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js"></script>
 
     <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
 
     <style>
@@ -64,9 +65,8 @@
         </span>
         <div
             class="relative w-full bg-[url('/images/wave4.svg')] bg-no-repeat bg-cover md:h-[50vh] sm:h-lvw overflow-hidden">
-            <form method="POST" action="{{ route('daftar.store') }}" 
-            class="mx-auto w-fit flex flex-col gap-6 mt-12 ">
-            @csrf
+            <form method="POST" action="{{ route('daftar.store') }}" class="mx-auto w-fit flex flex-col gap-6 mt-12 ">
+                @csrf
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                         <input type="text" id="kampus_id"
@@ -93,29 +93,27 @@
                                         <input id="searchInput" type="text"
                                             class="form-input w-full h-10 rounded border text-sm"
                                             placeholder="Ketik Nama Kampus">
+                                        <button type="button" id="btn-search"
+                                            class="rounded w-10 h-10 bg-white ml-3 flex justify-center items-center border">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 stroke-blue">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                                            </svg>
+                                        </button>
 
                                     </div>
                                     <div class="m-3 overflow-y-auto max-h-96" id="kampusList">
-                                        @foreach ($kampusList as $index => $kampus)
-                                            <div
-                                                class="h-10 px-2 py-1 mb-2 border rounded flex flex-col hidden">
-                                                <p class="text-xs border-b"
-                                                    onclick="selectKampus('{{ $kampus->NPSN }}')">
-                                                    {{ $kampus->NAMA_SEKOLAH }}
-                                                </p>
-                                                <p class="text-xs" 
-                                                    onclick="selectKampus('{{ $kampus->NPSN }}')">
-                                                    NPSN: {{ $kampus->NPSN }}
-                                                </p>
-                                            </div>
-                                        @endforeach
+                                        
                                     </div>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <select name="semester" class="form-multiselect w-[280px] gap-2 rounded border-2 border-orange text-sm py-2">
+                        <select name="semester"
+                            class="form-multiselect w-[280px] gap-2 rounded border-2 border-orange text-sm py-2">
                             @for ($i = 1; $i <= 14; $i++)
                                 <option value="{{ $i }}">{{ $i }}</option>
                             @endfor
@@ -138,7 +136,8 @@
                             name="nomor_wa" placeholder="Nomor WhatsApp">
                     </div>
                     <div>
-                        <select name="hobi" class="form-multiselect w-[280px] gap-2 rounded border-2 border-orange text-sm py-2">
+                        <select name="hobi"
+                            class="form-multiselect w-[280px] gap-2 rounded border-2 border-orange text-sm py-2">
                             <option value="" selected>Hobi</option>
                             <option value="olahraga">Olahraga</option>
                             <option value="musik">Musik</option>
@@ -167,26 +166,50 @@
             event.preventDefault();
         }
 
-        function selectKampus(NPSN) {
-            document.getElementById('kampus_id').value = NPSN;
-            closeModal();
+        $(document).ready(function() {
+            $('#btn-search').click(function() {
+                var keyword = $('#searchInput').val();
+                searchKampus(keyword);
+            });
+        });
+
+        function searchKampus(keyword) {
+            $.ajax({
+                url: "{{ route('get-kampus-by-keyword') }}",
+                type: "GET",
+                data: {
+                    keyword: keyword
+                },
+                success: function(response) {
+                    var kampusList = response.kampusList;
+                    var kampusDiv = $('#kampusList');
+                    kampusDiv.empty();
+
+                    kampusList.forEach(function(kampus) {
+                        var kampusItem = $(
+                            '<div class="h-10 px-2 py-1 mb-2 border rounded flex flex-col kampus-item" data-npsn="' +
+                            kampus.NPSN + '">');
+                        kampusItem.append('<p class="text-xs border-b">' + kampus.NAMA_SEKOLAH +
+                        '</p>');
+                        kampusItem.append('<p class="text-xs">NPSN: ' + kampus.NPSN + '</p>');
+                        kampusDiv.append(kampusItem);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
         }
 
-        document.getElementById("searchInput").addEventListener("input", function() {
-            var input, filter, kampusList, divs, i, txtValue;
-            input = document.getElementById('searchInput');
-            filter = input.value.toUpperCase();
-            kampusList = document.getElementById('kampusList');
-            divs = kampusList.getElementsByTagName('div');
-
-            for (i = 0; i < divs.length; i++) {
-                txtValue = divs[i].textContent || divs[i].innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    divs[i].classList.remove('hidden');
-                } else {
-                    divs[i].classList.add('hidden');
-                }
-            }
+        $(document).ready(function() {
+            $('#kampusList').on('click', '.kampus-item', function() {
+                var npsn = $(this).attr('data-npsn');
+                var namaSekolah = $(this).find('p:first')
+            .text(); // Menggunakan find untuk mencari elemen pertama
+                $('#kampus_id').val(npsn);
+                $('#searchInput').val(namaSekolah);
+                closeModal(event); // Memanggil fungsi closeModal
+            });
         });
     </script>
 
